@@ -1,12 +1,16 @@
-# Use Python 3.6 or later as a base image
+FROM python:3.9-slim
 
-# Copy contents into image
- 
-# Install pip dependencies from requirements
+WORKDIR /app
 
-# Set YOUR_NAME environment variable
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose the correct port
+COPY . .
 
-# Create an entrypoint
+ENV FLASK_APP=app.py
+ENV FLASK_RUN_HOST=0.0.0.0
+ENV FLASK_RUN_PORT=5500
 
+EXPOSE 5500
+
+CMD ["flask", "run", "--host=0.0.0.0", "--port=5500"]
