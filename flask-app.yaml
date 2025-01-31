@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: nginx
+  ports:
+   - protocol: TCP
+     port: 80
+     targetPort: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 10
+peter_mcnaughton@instance-instructor-k8s:~/k8s-tutorial-controllers/duo-task$ nano flask-app.yaml 
+peter_mcnaughton@instance-instructor-k8s:~/k8s-tutorial-controllers/duo-task$ kubectl apply -f .
+service/flask-app unchanged
+deployment.apps/flask-deployment configured
+service/flask-app unchanged
+deployment.apps/flask-deployment configured
+service/nginx-service unchanged
+Error from server (BadRequest): error when creating "ngnix.yaml": Deployment in version "v1" cannot be handled as a Deployment: strict decoding error: unknown field "spec.template.metadata.spec"
+peter_mcnaughton@instance-instructor-k8s:~/k8s-tutorial-controllers/duo-task$ rm nano.yaml
+rm: cannot remove 'nano.yaml': No such file or directory
+peter_mcnaughton@instance-instructor-k8s:~/k8s-tutorial-controllers/duo-task$ rm ngnix.yaml
+peter_mcnaughton@instance-instructor-k8s:~/k8s-tutorial-controllers/duo-task$ nanongnix.yaml
+peter_mcnaughton@instance-instructor-k8s:~/k8s-tutorial-controllers/duo-task$ cat flask-app.yaml 
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-app
+spec:
+  type: ClusterIP
+  selector:
+    app: flask
+  ports:
+  - protocol: TCP
+    port: 5500
+    targetPort: 5500
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-deployment
+  labels:
+    app: flask
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: flask
+  strategy:
+    rollingUpdate:
+      maxSurge: 20%
+      maxUnavailable: 20%
+  template:
+    metadata:
+      labels:
+        app: flask
+    spec:
+      containers:
+      - name: flask-container
+        image: <docker-hub-id>/duo-deploy-flask:latest
+        ports:
+        - containerPort: 5500
+        env:
+        - name: YOUR_NAME
+          value: xxxx
