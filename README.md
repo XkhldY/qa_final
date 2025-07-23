@@ -15,6 +15,25 @@ docker run -e YOUR_NAME="Alice" -p 5500:5500 duo-flask-react
 ```
 Navigate to [http://localhost:5500](http://localhost:5500) to see the React UI.
 
+### Continuous Integration / Deployment
+
+GitHub Actions will automatically lint, build, and (optionally) publish the Docker image on every push and pull request to `main`:
+
+- **Lint & build**:  
+  - Checks out code, sets up Python 3.11, installs backend requirements, runs Flake8 on `app.py`
+  - Sets up Node 18, installs frontend dependencies, runs `npm run build` to ensure React compiles
+  - Builds the multi-stage Docker image as per the Dockerfile
+
+- **DockerHub push**:  
+  - On direct pushes to `main`, if the repository secrets `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` are set, the image is pushed to Docker Hub as `${DOCKERHUB_USERNAME}/duo-flask-react:$SHORT_SHA`.
+  - For PRs and other branches, the Docker push step is skipped.
+
+**Required secrets:**
+- `DOCKERHUB_USERNAME`
+- `DOCKERHUB_TOKEN` (DockerHub Personal Access Token with `write:repo`/`push` permission)
+
+See `.github/workflows/ci.yml` for full details.
+
 ## Developing the React frontend
 
 ```bash

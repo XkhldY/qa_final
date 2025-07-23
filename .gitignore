@@ -1,0 +1,49 @@
+# Python
+*.pyc
+__pycache__/
+.env
+.venv/
+env/
+venv/
+instance/
+*.pyo
+*.pyd
+.Python
+*.db
+*.sqlite3
+
+# Node / React frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/build/
+react-build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.pid
+*.tar
+*.bak
+*.swp
+
+# Misc
+*.log
+build/
+dist/
+.cache/
+coverage/
+*.egg-info
+.idea/
+.vscode/
+*.swp
+*.swo
+*.orig
+
+# Ignore test artifacts
+.pytest_cache/
