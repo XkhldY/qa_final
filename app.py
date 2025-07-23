@@ -1,19 +1,34 @@
 '''
-Basic static web app
-Use for exercises that don't need a database layer
+Flask backend for Duo Task.
+Now serves as both API and static file host for React SPA.
 '''
-from flask import Flask
-from os import getenv
+import os
+from flask import Flask, jsonify, send_from_directory, request
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='react-build', static_url_path='')
 
-@app.route('/')
-def home():
-    hostname = getenv('HOSTNAME')
-    name = getenv('YOUR_NAME')
-    if name is None:
-      name = "friend"
-    return f"<h1>Hello and welcome {name}.</h1>\n\n<h2>I'm currently running in {hostname}.</h2>\n"
+def get_greeting_msg():
+    hostname = os.getenv('HOSTNAME')
+    name = os.getenv('YOUR_NAME')
+    if not name:
+        name = "friend"
+    # Match original formatting
+    return f"Hello and welcome {name}.\n\nI'm currently running in {hostname}."
+
+@app.route('/api/hello')
+def api_hello():
+    return jsonify({"message": get_greeting_msg()})
+
+# Serve React static files (SPA catch-all)
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve_react(path):
+    root_dir = os.path.join(os.getcwd(), 'react-build')
+    # If file exists (js/css/img, etc.), serve it
+    if path and os.path.exists(os.path.join(root_dir, path)):
+        return send_from_directory(root_dir, path)
+    # Otherwise, serve index.html for SPA client routing
+    return send_from_directory(root_dir, 'index.html')
 
 if __name__=='__main__':
-  app.run(host='0.0.0.0', port=5500, debug=True)
+    app.run(host='0.0.0.0', port=5500, debug=True)
