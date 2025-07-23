@@ -34,6 +34,27 @@ GitHub Actions will automatically lint, build, and (optionally) publish the Dock
 
 See `.github/workflows/ci.yml` for full details.
 
+### One-shot push to GitHub
+
+To automate pushing this repository to GitHub (including first-time setup), use the helper script:
+
+```bash
+GITHUB_TOKEN=... GITHUB_REPO=your-username/your-repo-name scripts/push_to_github.sh [branch]
+```
+
+- `GITHUB_TOKEN`: GitHub Personal Access Token (with repo rights) used for authentication.
+- `GITHUB_REPO`: The repository, e.g. `username/repo-name`.
+- `[branch]`: (Optional) Branch to push to. Defaults to `main`.
+
+The script will:
+- Initialise git if needed and set up the `main` branch.
+- Commit changes if any.
+- Add or update the `origin` remote using your token.
+- Push to GitHub.
+
+> **Note:** The script must be executable. If needed, run:  
+> `chmod +x scripts/push_to_github.sh`
+
 ## Developing the React frontend
 
 ```bash
