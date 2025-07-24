@@ -1,36 +1,37 @@
-import { useEffect, useState } from "react";
+import React from "react";
+import Hero from "./components/Hero";
+import Stats from "./components/Stats";
+import Steps from "./components/Steps";
+import Features from "./components/Features";
+import Testimonials from "./components/Testimonials";
+import TechStack from "./components/TechStack";
+import FAQ from "./components/FAQ";
+import CTA from "./components/CTA";
+import Footer from "./components/Footer";
+import useFadeInOnView from "./utils/useFadeInOnView";
 
-export default function App() {
-  const [msg, setMsg] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+const SECTIONS = [
+  { id: "hero", Component: Hero },
+  { id: "stats", Component: Stats },
+  { id: "steps", Component: Steps },
+  { id: "features", Component: Features },
+  { id: "testimonials", Component: Testimonials },
+  { id: "techstack", Component: TechStack },
+  { id: "faq", Component: FAQ },
+  { id: "cta", Component: CTA },
+  { id: "footer", Component: Footer },
+];
 
-  useEffect(() => {
-    fetch("/api/hello")
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch greeting");
-        return res.json();
-      })
-      .then((data) => {
-        setMsg(data.message);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError("Error: " + err.message);
-        setLoading(false);
-      });
-  }, []);
+function App() {
+  useFadeInOnView(); // Sets up the IntersectionObserver globally
 
   return (
-    <div className="container">
-      <div className="card">
-        <h1>Duo Flask + React</h1>
-        {loading && <div className="spin">Loading…</div>}
-        {!loading && !error && (
-          <pre className="greeting">{msg}</pre>
-        )}
-        {error && <div className="error">{error}</div>}
-      </div>
+    <div className="bg-slate-50 text-neutral-700">
+      {SECTIONS.map(({ id, Component }) => (
+        <Component key={id} />
+      ))}
     </div>
   );
 }
+
+export default App;
