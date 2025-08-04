@@ -72,3 +72,67 @@ Set the environment variable `YOUR_NAME` to your name to have the app display yo
 ## NGINX/Reverse Proxy
 
 The `nginx.conf` file can be used to configure an NGINX container to run as a reverse proxy to the Flask app container, effectively making the Flask application accessible on port `80`. You will need to know how to configure networks in Docker in order to achieve this.
+
+```
+
+# Batch Resume Parsing
+
+This project supports batch parsing of resumes from PDFs, DOCX, and TXT files.
+
+## Installing Dependencies
+
+Make sure to install the new dependencies:
+```
+pip install -r requirements.txt
+```
+
+## Using the CLI
+
+To parse all resumes under a directory, run:
+```
+python scripts/batch_resume_parser.py --input /path/to/resume/dir --output results.json
+```
+If you omit `--output`, the results will print to stdout.
+
+## Using the API
+
+A Flask API endpoint is available:
+
+```
+POST /api/parse-resumes
+Content-Type: multipart/form-data
+Field: files (multiple file upload)
+```
+
+Example using `curl`:
+```
+curl -X POST http://localhost:5500/api/parse-resumes \
+  -F "files=@/path/to/john_resume.pdf" \
+  -F "files=@/path/to/jane_resume.docx"
+```
+The response will be:
+```json
+{
+  "results": [
+    {
+      "filename": "john_resume.pdf",
+      "data": {
+        "name": "John Doe",
+        "email": "john@example.com",
+        "phone": "+1-555-123-4567",
+        "skills": ["Python", "Leadership", "..."],
+        "raw_text": "...full resume text..."
+      }
+    },
+    {
+      "filename": "jane_resume.docx",
+      "data": {
+        ...
+      }
+    }
+  ]
+}
+```
+If a file fails to parse, `"error"` will be present instead of `"data"`.
+
+CORS is enabled by default, so you can call this API from your frontend app.
