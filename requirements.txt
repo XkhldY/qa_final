@@ -1,2 +1,6 @@
 Flask>=2.2,<3
 Jinja2<3.1
+pdfminer.six>=20221105
+docx2txt>=0.8
+tqdm>=4.66
+Flask-CORS>=4.0
